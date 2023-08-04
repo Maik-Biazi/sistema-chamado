@@ -1,6 +1,6 @@
 import { useState, createContext } from 'react'
 import { auth, db } from '../services/firebaseConnection'
-import { createUserWithEmailAndPassword } from 'firebase/auth'
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
 import { getDoc, doc, setDoc } from 'firebase/firestore'
 import { toast } from 'react-toastify'
 
@@ -15,10 +15,34 @@ function AuthProvider({ children }) {
 
     const navigate = useNavigate()
 
-    function sigIn(email, password) {
-        console.log(email)
-        console.log(password)
-        console.log('logado com sucesso')
+    async function signIn(email, password) {
+
+        setLoadingAuth(true)
+        await signInWithEmailAndPassword(auth, email, password)
+            .then(async (value) => {
+                let uid = value.user.uid
+                const docRef = doc(db, "users", uid)
+                const docSnap = await getDoc(docRef)
+
+                let data = {
+                    uid: uid,
+                    name: docSnap.data().name,
+                    email: value.user.email,
+                    avatarUrl: docSnap.data().avatarUrl
+
+
+                }
+                setUser(data)
+                storageUser(data)
+                setLoadingAuth(false)
+                toast.success(`Bem vindo de volta ${docSnap.data().name}`)
+                navigate("/dashboard")
+            })
+            .catch((error) => {
+                console.log(error);
+                setLoadingAuth(false)
+                toast.error("Ops algo deu errado")
+            })
     }
     // async function signUp(email, password, name) {
     //     setLoadingAuth(true)
@@ -95,7 +119,7 @@ function AuthProvider({ children }) {
             value={{
                 signed: !!user,
                 user,
-                sigIn,
+                signIn,
                 signUp,
                 loadingAuth
             }}>

@@ -12,11 +12,11 @@ export default function SignIn() {
 
     const { signIn } = useContext(AuthContext)
 
-    function handleSignIn(e) {
+    async function handleSignIn(e) {
         e.preventDefault();
 
         if (email !== '' && password !== '') {
-            signIn(email, password)
+            await signIn(email, password)
         }
     }
 

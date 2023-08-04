@@ -3,6 +3,7 @@ import logo from '../../assets/logo.png';
 import { Link } from 'react-router-dom'
 
 import { AuthContext } from '../../contexts/auth'
+import { toast } from 'react-toastify';
 
 export default function SignUp() {
     const [name, setName] = useState('');
@@ -13,9 +14,11 @@ export default function SignUp() {
 
     async function handleSubmit(e) {
         e.preventDefault();
-        if (name !== "" && email !== "" && password !== "") {
-            await signUp(email, password, name)
+        if (password.length < 6) {
+            toast.info('Senha muito curta')
         }
+        if (name !== "" && email !== "" && password !== "")
+            await signUp(email, password, name)
     }
 
 
