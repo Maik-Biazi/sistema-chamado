@@ -24,10 +24,7 @@ function AuthProvider({ children }) {
                 setUser(JSON.parse(storageUser))
                 setLoading(false);
             }
-
-
             setLoading(false);
-
         }
 
         loadUser();
@@ -45,7 +42,7 @@ function AuthProvider({ children }) {
 
                 let data = {
                     uid: uid,
-                    nome: docSnap.data().nome,
+                    name: docSnap.data().name,
                     email: value.user.email,
                     avatarUrl: docSnap.data().avatarUrl
                 }
@@ -179,7 +176,9 @@ function AuthProvider({ children }) {
                 signUp,
                 logout,
                 loadingAuth,
-                loading
+                loading,
+                storageUser,
+                setUser
             }}>
             {children}
         </AuthContext.Provider>
