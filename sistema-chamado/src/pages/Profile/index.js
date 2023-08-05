@@ -5,6 +5,8 @@ import { AuthContext } from '../../contexts/auth'
 import { useContext, useState } from 'react'
 import avatar from '../../assets/avatar.png'
 import './profile.css'
+import { db, storage } from '../../services/firebaseConnection'
+import { doc, updateDoc } from 'firebase/firestore'
 import { toast } from "react-toastify";
 
 export default function Profile() {
@@ -29,6 +31,26 @@ export default function Profile() {
         }
     }
 
+    async function handleSubmit(e) {
+        e.preventDefault();
+
+        if (imageAvatar === null && name !== '') {
+            const docRef = doc(db, "users", user.uid)
+            await updateDoc(docRef, {
+                name: name
+            })
+                .then(() => {
+                    let data = {
+                        ...user,
+                        name: name,
+
+                    }
+                    setUser(data)
+                    storageUser(data);
+                    toast.success('alterações Feita')
+                })
+        }
+    }
 
 
     return (
@@ -42,7 +64,7 @@ export default function Profile() {
 
                 <div className="container">
 
-                    <form className="form-profile">
+                    <form className="form-profile" onSubmit={handleSubmit}>
                         <label className="label-avatar">
                             <span>
                                 <FiUpload color="#FFF" size={25} />
