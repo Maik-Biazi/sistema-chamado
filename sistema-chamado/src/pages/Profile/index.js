@@ -8,6 +8,7 @@ import './profile.css'
 import { db, storage } from '../../services/firebaseConnection'
 import { doc, updateDoc } from 'firebase/firestore'
 import { toast } from "react-toastify";
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 
 export default function Profile() {
     const { user, setUser, storageUser, logout } = useContext(AuthContext)
@@ -31,8 +32,49 @@ export default function Profile() {
         }
     }
 
+    async function handleUpload() {
+        const currentUid = user.uid;
+
+        const uploadRef = ref(storage, `images/${currentUid}/${imageAvatar.name}`)
+        const uploadTask = uploadBytes(uploadRef, imageAvatar)
+            .then((snapshot) => {
+
+                getDownloadURL(snapshot.ref).then(async (downloadURL) => {
+                    let urlFoto = downloadURL;
+
+                    const docRef = doc(db, "users", user.uid)
+                    await updateDoc(docRef, {
+                        avatarUrl: urlFoto,
+                        name: name,
+                    })
+                        .then(() => {
+                            let data = {
+                                ...user,
+                                name: name,
+                                avatarUrl: urlFoto,
+                            }
+
+                            setUser(data);
+                            storageUser(data);
+                            toast.success("Atualizado com sucesso!")
+
+                        }).catch((error) => {
+                            console.error("Erro ao fazer o upload: ", error);
+                            toast.error("Ocorreu um erro ao atualizar a imagem do perfil");
+                        })
+
+                })
+
+            })
+
+    }
+
     async function handleSubmit(e) {
         e.preventDefault();
+        if (name.trim() === '') {
+            toast.error('Por favor, preencha o nome.');
+            return;
+        }
 
         if (imageAvatar === null && name !== '') {
             const docRef = doc(db, "users", user.uid)
@@ -50,8 +92,10 @@ export default function Profile() {
                     toast.success('alterações Feita')
                 })
         }
+        else if (name !== '' && name !== null) {
+            handleUpload()
+        }
     }
-
 
     return (
         <div>
