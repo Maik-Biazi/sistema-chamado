@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import { AuthContext } from '../../contexts/auth'
 import Header from '../../components/header';
 import './dashboard.css'
@@ -52,24 +52,6 @@ export default function Dashboard() {
                                         <FiEdit2 color='#fff' size={17} />
                                     </button>
 
-                                </td>
-                            </tr>
-                        </tbody>
-                        <tbody>
-                            <tr>
-                                <td data-label='Cliente'>Mercado esquina</td>
-                                <td data-label='Assunto'>Suporte</td>
-                                <td data-label='status'>
-                                    <span className='badge' style={{ backgroundColor: '#999' }}>Em aberto</span>
-                                </td>
-                                <td data-label='Cadastrado'>12/05/2022</td>
-                                <td data-label='Cadastrado'>
-                                    <button className='action' style={{ backgroundColor: '#3583f6' }}>
-                                        <FiSearch color='#fff' size={17} />
-                                    </button>
-                                    <button className='action' style={{ backgroundColor: '#f6a935' }}>
-                                        <FiEdit2 color='#fff' size={17} />
-                                    </button>
                                 </td>
                             </tr>
                         </tbody>
