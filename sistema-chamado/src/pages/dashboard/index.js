@@ -16,10 +16,12 @@ export default function Dashboard() {
     const [chamados, setChamados] = useState([])
     const [loading, setLoading] = useState(true)
     const [isEmpty, setIsEmpty] = useState(false)
+    const [lastDocs, setLastDocs] = useState()
+    const [loadingMore, setLoadingMore] = useState(false)
 
     useEffect(() => {
         async function loadChamados() {
-            const chamadosFiltrados = query(listRef, orderBy('created', 'desc'), limit(10))
+            const chamadosFiltrados = query(listRef, orderBy('created', 'desc'), limit(5))
 
             const querySnapshot = await getDocs(chamadosFiltrados)
             setChamados([])
@@ -47,12 +49,23 @@ export default function Dashboard() {
                     complemento: doc.data().complemento
                 })
             })
+            const lastDoc = querySnapshot.docs[querySnapshot.docs.length - 1]
+
             setChamados(chamados => [...chamados, ...lista])
+
+            setLastDocs(lastDoc)
         }
         else {
             setIsEmpty(true)
         }
+        setLoadingMore(false)
     }
+
+
+    function handleMore() {
+        alert("teste")
+    }
+
     if (loading) {
         return (
             <div>
@@ -131,6 +144,10 @@ export default function Dashboard() {
                                     })}
                                 </tbody>
                             </table>
+
+                            {loading && <h3>Buscando mais chamados...</h3>}
+
+                            {!loadingMore && !isEmpty && <button onClick={handleMore}>Buscar mais </button>}
                         </>
 
 
