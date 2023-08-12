@@ -62,8 +62,13 @@ export default function Dashboard() {
     }
 
 
-    function handleMore() {
-        alert("teste")
+    async function handleMore() {
+        setLoadingMore(true)
+
+        const chamadosFiltrados = query(listRef, orderBy('created', 'desc'), startAfter(lastDocs), limit(5))
+
+        const querySnapshot = await getDocs(chamadosFiltrados)
+        await updateState(querySnapshot)
     }
 
     if (loading) {
@@ -127,16 +132,18 @@ export default function Dashboard() {
                                                 <td data-label='Cliente'>{item.cliente}</td>
                                                 <td data-label='Assunto'>{item.assunto}</td>
                                                 <td data-label='status'>
-                                                    <span className='badge' style={{ backgroundColor: '#999' }}>{item.status}</span>
+                                                    <span className='badge' style={{ backgroundColor: item.status === 'Aberto' ? '#5cb85c' : '#999' }}>
+                                                        {item.status}
+                                                    </span>
                                                 </td>
                                                 <td data-label='Cadastrado'>{item.createdFormat}</td>
                                                 <td data-label='Cadastrado'>
                                                     <button className='action' style={{ backgroundColor: '#3583f6' }}>
                                                         <FiSearch color='#fff' size={17} />
                                                     </button>
-                                                    <button className='action' style={{ backgroundColor: '#f6a935' }}>
+                                                    <Link to={`/new/${item.id}`} className='action' style={{ backgroundColor: '#f6a935' }}>
                                                         <FiEdit2 color='#fff' size={17} />
-                                                    </button>
+                                                    </Link>
 
                                                 </td>
                                             </tr>
@@ -147,7 +154,7 @@ export default function Dashboard() {
 
                             {loading && <h3>Buscando mais chamados...</h3>}
 
-                            {!loadingMore && !isEmpty && <button onClick={handleMore}>Buscar mais </button>}
+                            {!loadingMore && !isEmpty && <button className='btn-more' onClick={handleMore}>Buscar mais </button>}
                         </>
 
 
