@@ -5,14 +5,14 @@ import './new.css'
 import { FiPlusCircle } from 'react-icons/fi'
 import { AuthContext } from '../../contexts/auth'
 import { db } from '../../services/firebaseConnection'
-import { collection, getDocs, getDoc, addDoc, doc } from "firebase/firestore"
+import { collection, getDocs, getDoc, addDoc, doc, updateDoc } from "firebase/firestore"
 import { toast } from "react-toastify"
-import { useParams } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 
 const listRef = collection(db, "customers");
 
 export default function New() {
-
+    const navigate = useNavigate()
     const { user } = useContext(AuthContext)
     const { id } = useParams()
 
@@ -94,11 +94,33 @@ export default function New() {
     }
     async function handleRegister(e) {
         e.preventDefault()
-
+        //Editando um novo chamados
         if (idCustomer) {
+            const docRef = doc(db, "chamados", id)
+            await updateDoc(docRef, {
+
+                cliente: customers[customerSelected].nomeFantasia,
+                clienteId: customers[customerSelected].id,
+                assunto: assunto,
+                complemento: complemento,
+                status: status,
+                userId: user.uid,
+                nomeResponsavel: user.name
+            }).then(() => {
+                toast.success("Atualizado com sucesso")
+                setCustomerSelected(0);
+                setComplemento('');
+                setAssunto('Suporte'); // Resetar o valor do assunto
+                setStatus('Aberto');   // Resetar o valor do status
+                navigate('/dashboard')
+
+            }).catch((error) => {
+                console.log(error)
+            })
+            return
 
         }
-
+        //Registrando um novo chamado
         await addDoc(collection(db, 'chamados'), {
             created: new Date(),
             cliente: customers[customerSelected].nomeFantasia,
