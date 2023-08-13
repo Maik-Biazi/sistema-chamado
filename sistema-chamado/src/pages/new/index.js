@@ -1,13 +1,13 @@
 import { useState, useEffect, useContext } from "react"
 import Header from "../../components/header"
 import Title from "../../components/Title"
-import './new.css'
 import { FiPlusCircle } from 'react-icons/fi'
 import { AuthContext } from '../../contexts/auth'
 import { db } from '../../services/firebaseConnection'
 import { collection, getDocs, getDoc, addDoc, doc, updateDoc } from "firebase/firestore"
 import { toast } from "react-toastify"
 import { useParams, useNavigate } from "react-router-dom"
+import './new.css'
 
 const listRef = collection(db, "customers");
 
@@ -17,7 +17,7 @@ export default function New() {
     const { id } = useParams()
 
 
-    const [customers, setCustomer] = useState(true)
+    const [customers, setCustomer] = useState([])
     const [customerSelected, setCustomerSelected] = useState(0)
     const [loadCustomers, setLoadCustomer] = useState(true)
     const [complemento, setComplemento] = useState()
@@ -31,12 +31,14 @@ export default function New() {
             const querySnapshot = await getDocs(listRef)
                 .then((snapshot) => {
                     let lista = []
+
                     snapshot.forEach((doc) => {
                         lista.push({
                             id: doc.id,
                             nomeFantasia: doc.data().nomeFantasia
                         })
                     })
+
                     if (snapshot.docs.size === 0) {
                         console.log("NENHUMA EMPRESA ENCONTRADA")
                         setCustomer([{ id: '1', nomeFantasia: "Nenhum Cliente Cadastrado" }])
@@ -48,18 +50,18 @@ export default function New() {
                     setLoadCustomer(false)
 
                     if (id) {
-                        loadId(lista)
+                        loadId(lista);
                     }
 
                 })
                 .catch((error) => {
-                    toast("Algo deu Errado")
+                    toast("Algo deu Errado", error)
                     setLoadCustomer(false)
                     setCustomer([{ id: '1', nomeFantasia: "Cliente com erro" }])
                 })
         }
         loadCustomers()
-    }, [id, loadId])
+    }, [id])
 
     async function loadId(lista) {
         const docRef = doc(db, "chamados", id)
