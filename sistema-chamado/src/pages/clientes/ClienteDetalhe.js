@@ -7,8 +7,8 @@ import { addDoc, collection, } from 'firebase/firestore'
 import { toast } from 'react-toastify'
 
 
-export default function Customers() {
-    const [nome, setNome] = useState('')
+export default function ClienteDetalhe() {
+    const [nomeFantasia, setNomeFantasia] = useState('')
     const [cnpj, setCnpj] = useState('')
     const [endereco, setEndereco] = useState('')
     const [loading, setLoaging] = useState(false)
@@ -16,19 +16,19 @@ export default function Customers() {
     async function handlerRegister(e) {
         setLoaging(true)
         e.preventDefault();
-        if (nome.trim() === '' || cnpj.trim() === '' || endereco.trim() === '') {
+        if (nomeFantasia.trim() === '' || cnpj.trim() === '' || endereco.trim() === '') {
             toast.info('os campos nao foram preenchido')
             setLoaging(false)
         }
 
-        if (nome !== '' && cnpj !== '' && endereco !== '') {
-            await addDoc(collection(db, "customers"), {
-                nomeFantasia: nome,
+        if (nomeFantasia !== '' && cnpj !== '' && endereco !== '') {
+            await addDoc(collection(db, "clientes"), {
+                nomeFantasia: nomeFantasia,
                 cnpj: cnpj,
                 endereco: endereco
             }).then(() => {
 
-                setNome('')
+                setNomeFantasia('')
                 setCnpj('')
                 setEndereco('')
                 toast.success('empresa registrada!')
@@ -58,8 +58,8 @@ export default function Customers() {
                         <label>Nome Fantasia</label>
                         <input type="text"
                             placeholder="Nome da Empresa"
-                            value={nome}
-                            onChange={(e) => setNome(e.target.value)} />
+                            value={nomeFantasia}
+                            onChange={(e) => setNomeFantasia(e.target.value)} />
 
                         <label>Cnpj</label>
                         <input type="text"

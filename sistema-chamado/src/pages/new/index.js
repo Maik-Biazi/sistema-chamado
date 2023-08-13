@@ -9,7 +9,7 @@ import { toast } from "react-toastify"
 import { useParams, useNavigate } from "react-router-dom"
 import './new.css'
 
-const listRef = collection(db, "customers");
+const listRef = collection(db, "clientes");
 
 export default function New() {
     const navigate = useNavigate()
