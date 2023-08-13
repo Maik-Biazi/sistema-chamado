@@ -111,7 +111,7 @@ export default function New() {
                 setCustomerSelected(0);
                 setComplemento('');
                 setAssunto('Suporte'); // Resetar o valor do assunto
-                setStatus('Aberto');   // Resetar o valor do status
+                setStatus('Aberto');   // Resetar 
                 navigate('/dashboard')
 
             }).catch((error) => {
